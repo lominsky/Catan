@@ -16,6 +16,23 @@ var currentUser = null;
 
 $( document ).ready(function(){
   $(".button-collapse").sideNav();
+
+  $('.modal').modal({
+    dismissible: true, // Modal can be dismissed by clicking outside of the modal
+    opacity: .5, // Opacity of modal background
+    inDuration: 300, // Transition in duration
+    outDuration: 200, // Transition out duration
+    startingTop: '4%', // Starting top style attribute
+    endingTop: '10%', // Ending top style attribute
+    ready: function(modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
+      console.log("Modal Opened");
+    },
+    complete: function() { 
+      console.log('Modal Closed'); 
+    } // Callback for Modal close
+  });
+
+  $('select').material_select();
 });
 
 function init() {
@@ -25,7 +42,7 @@ function init() {
     } else {
       currentUser = null;
     }
-    showView(view_players);
+    showView(view_games);
     checkIfLoggedIn();
   });
 }
@@ -57,13 +74,45 @@ function checkIfLoggedIn() {
 
 function updatePlayers() {
   $( "li" ).remove( ".list_players_name" );
+  $( "th" ).remove( ".games_header" );
   for(i in players) {
     $( "#list_players" ).append( "<li class=\"collection-item list_players_name\">" + players[i] + "</li>" );
+    $( "#table_games_header" ).append("<th class=\"games_header\">" + players[i] + "</th>");
   }
 }
 
 function updateGames() {
-  //console.log(games[0]);
+  $( "tr" ).remove( ".table_games_row" );
+  for(i in games) {
+    var date = new Date(games[i].timestamp);
+    var day = date.getDate();
+    var month = date.getMonth() + 1;
+    var year = date.getFullYear();
+    var game = "<tr class=\"table_games_row\"><td>" + 
+      month + "/" + day + "/" + year + "</td><td>" + games[i].road +
+      "</td><td>"  + games[i].army +
+      "</td>";
+    for(j in players) {
+      var name = players[j];
+      game += "<td>";
+      if(games[i][name]) {
+        game += games[i][name];
+      } else {
+        game += " ";
+      }
+      game += "</td>";
+    }
+    $( "#table_games_body" ).append(game);
+  }
+
+                  //   <tr class="table_games_row">
+                  //   <td>Date</td>
+                  //   <td>Road</td>
+                  //   <td>Army</td>
+                  //   <td>Player</td>
+                  //   <td>Player</td>
+                  //   <td>Player</td>
+                  // </tr>
 }
 
 function signIn() {
@@ -107,7 +156,18 @@ function addPlayer() {
   }
 }
 
+function addGame() {
+  var data = $( ".new_game_data");
+  var selects = $('#select_player1').val();
+  console.log(selects);
+}
+
 function showView(id) {
   hideAllViews();
+  clearFields();
   id.style.display = "block";
+}
+
+function clearFields() {
+  $("#field_new_player").val("");
 }

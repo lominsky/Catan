@@ -72,37 +72,84 @@
         </nav>
 
         <div id="view_players" class="view container">
-          <br><br>
+          <br>
           <div class="row">
             <div class="col l2"></div>
             <div class="col s12 m12 l8">
-              <h4>Players</h4>
-              <br>
-              <ul class="collection" id="list_players"></ul>
+              <div class="card-panel">
+                <h4>Players</h4>
+                <br>
+                <ul class="collection" id="list_players"></ul>
+              </div>
             </div>
             <div class="col l2"></div>
           </div>
           <div class="row">
             <div class="col l2"></div>
-            <div class="input-field col s12 m12 l8">
-              <input id="field_new_player" type="text" class="validate">
-              <label for="field_new_player">Player Name</label>
-              <a onclick="addPlayer()" class="waves-effect waves-light btn">Add Player</a>
+            <div class="col s12 m12 l8">
+              <div class="card-panel">
+                <div class="input-field">
+                  <input id="field_new_player" type="text" class="validate">
+                  <label for="field_new_player">Player Name</label>
+                  <a onclick="addPlayer()" class="waves-effect waves-light btn">Add Player</a>
+                </div>
+              </div>
             </div>
           </div>
-              
-
-          <!-- <a id="button_add_player" onclick="addPlayer()" class="btn-floating btn-large waves-effect waves-light teal"><i class="material-icons">add</i></a> -->
         </div>
         
         <div id="view_games" class="view container">
           <div class="row"></div>
           <div class="row"></div>
           <div class="row">
-            <div class="col l2"></div>
-            <div class="col s12 m12 l8">
+            <div class="card-panel">
               <h4>Games</h4>
+              <table id="table_games" class="highlight">
+                <thead>
+                  <tr id="table_games_header">
+                      <th>Date</th>
+                      <th>Road</th>
+                      <th>Army</th>
+                  </tr>
+                </thead>
+                <tbody id="table_games_body">
+                </tbody>
+              </table>
             </div>
+          </div>
+
+          <a id="button_add_game" class="btn-floating btn-large waves-effect waves-light teal hide-on-small-only modal-trigger" href="#modal_add_game"><i class="material-icons">add</i></a>
+        </div>
+
+        <!-- Modal Structure -->
+        <div id="modal_add_game" class="modal modal-fixed-footer">
+          <div class="modal-content">
+            <h4>Add New Game</h4>
+            <div class="row">
+              <div class="input-field col m6 s12">
+                <select multiple class="new_game_data" id="select_player1">
+                  <option value="" disabled selected>Player 1</option>
+                  <option value="Louis">Louis</option>
+                  <option value="Laura">Laura</option>
+                  <option value="Bob">Bob</option>
+                </select>
+              </div>
+              <div class="input-field col m2 s12">
+                <input id="last_name" type="number" class="validate new_game_data">
+                <label for="last_name">Score</label>
+              </div>
+              <div class="input-field col m2 s6">
+                <input type="checkbox" id="checkbox_road" class="new_game_data"/>
+                <label for="checkbox_road">Road</label>
+              </div>
+              <div class="input-field col m2 s6">
+                <input type="checkbox" id="checkbox_army" class="new_game_data" />
+                <label for="checkbox_army">Army</label>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <a href="#!" onclick="addGame()" class="modal-action modal-close waves-effect waves-green btn-flat ">Add</a>
           </div>
         </div>
         
