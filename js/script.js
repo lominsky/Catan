@@ -14,7 +14,6 @@ var games;
 var currentUser = null;
 var stats;
 
-
 $( document ).ready(function(){
   $(".button-collapse").sideNav();
   $('select').material_select();
@@ -49,6 +48,19 @@ function checkIfLoggedIn() {
       updatePlayers();
     });
 
+    //Get Admin
+    var adminDB = firebase.database().ref('admin/');
+    adminDB.on('value', function(snapshot) {
+      var admin = (snapshot.val());
+      var found = false;
+      for(i in admin) {
+        if(admin[i] == currentUser.email) {
+          found = true;
+        }
+      }
+      showAdmin(found);
+    });
+
     //Get Games
     var gameDB = firebase.database().ref('games/');
     gameDB.on('value', function(snapshot) {
@@ -57,7 +69,6 @@ function checkIfLoggedIn() {
         games.sort(sortGames);
       updateGames();
     });
-
   } else {
     $("#signed_in").addClass("hide")
     $("#signed_out").removeClass("hide")
@@ -66,6 +77,15 @@ function checkIfLoggedIn() {
         signIn();
       }
     });
+  }
+}
+
+function showAdmin(isAdmin) {
+  console.log(isAdmin)
+  if(isAdmin) {
+    $( ".admin" ).removeClass("hide");
+  } else {
+    $( ".admin" ).addClass("hide");
   }
 }
 
