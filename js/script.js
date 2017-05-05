@@ -28,7 +28,9 @@ function init() {
     } else {
       currentUser = null;
     }
-    showView("view_" + window.location.hash.substring(1));
+    var hash = window.location.hash;
+    var firstView = (hash != "") ? "view_" + window.location.hash.substring(1) : "view_new_game";
+    showView(firstView);
     checkIfLoggedIn();
   });
 }
