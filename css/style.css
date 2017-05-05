@@ -1,15 +1,3 @@
-#signed_out {
-  display: none;
-}
-
-#signed_in {
-  display: none;
-}
-
-.view {
-  display: none;
-}
-
 #button_add_game {
   position: absolute;
   right: 50px;

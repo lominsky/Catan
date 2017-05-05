@@ -12,12 +12,13 @@ var database = firebase.database();
 var players = {};
 var games;
 var currentUser = null;
+var stats;
 
 
 $( document ).ready(function(){
   $(".button-collapse").sideNav();
-
   $('select').material_select();
+  $('.collapsible').collapsible();
 });
 
 function init() {
@@ -34,13 +35,15 @@ function init() {
 
 function checkIfLoggedIn() {
   if (currentUser != null) {
-    $("#signed_out").css("display", "none")
-    $("#signed_in").css("display", "block")
+    $("#signed_out").addClass("hide");
+    $("#signed_in").removeClass("hide");
 
     //Get Players
     var playerDB = firebase.database().ref('players/');
     playerDB.on('value', function(snapshot) {
       players = (snapshot.val());
+      if(players)
+        players.sort();
       updatePlayers();
     });
 
@@ -48,13 +51,24 @@ function checkIfLoggedIn() {
     var gameDB = firebase.database().ref('games/');
     gameDB.on('value', function(snapshot) {
       games = (snapshot.val());
+      if(games)
+        games.sort(sortGames);
       updateGames();
     });
 
   } else {
-    $("#signed_in").css("display", "none")
-    $("#signed_out").css("display", "block")
+    $("#signed_in").addClass("hide")
+    $("#signed_out").removeClass("hide")
+    $( "#password" ).keypress(function(evt) {
+      if(event.keyCode == 13) {
+        signIn();
+      }
+    });
   }
+}
+
+function sortGames(a, b) {
+  return b.timestamp-a.timestamp;
 }
 
 function updatePlayers() {
@@ -62,11 +76,63 @@ function updatePlayers() {
   $( "th" ).remove( ".games_header" );
   $( "option" ).remove( ".selector_name" );
   for(i in players) {
-    $( "#list_players" ).append( "<li class=\"collection-item list_players_name\">" + players[i] + "</li>" );
+    $( "#list_players" ).append( "<li class=\"list_players_name\"><div class=\"collapsible-header list_players_name\">" + players[i] + "</div><div class=\"collapsible-body list_players_name\"><span>" + players[i] + "</span></div></li>" );
+    $( "#list_players" ).append(  );
     $( "#table_games_header" ).append("<th class=\"games_header\">" + players[i] + "</th>");
     $( "select" ).append("<option value=\"" + players[i] + "\" class=\"selector_name\">" + players[i] + "</th>");
   }
   $('select').material_select();
+}
+
+function getStats() {
+  stats = {};
+  for(i in players) 
+  {
+    var temp = { 
+      wins: 0 ,
+      games_played: 0
+    };
+    stats[players[i]] = temp;
+
+  }
+
+  countWins();
+  console.log(stats);
+}
+
+function countWins() {
+  for(i in games) {
+    var winners = checkWinner(games[i]);
+    for(j in winners) {
+      stats[winners[j]].wins++;
+    }
+  }
+}
+
+function findMax(game) {
+  var max = 0;
+  for(i in players) {
+    if(game[players[i]]) {
+      stats[players[i]].games_played++;
+      if(game[players[i]] > max) {
+        max = game[players[i]];
+      }
+    }
+  }
+  return max;
+}
+
+function checkWinner(game) {
+  var max = findMax(game);
+  var winners = [];
+  for(i in players) {
+    if(game[players[i]]) {
+      if(game[players[i]] == max) {
+        winners.push(players[i]);
+      }
+    }
+  }
+  return winners
 }
 
 function updateGames() {
@@ -98,6 +164,8 @@ function updateGames() {
     }
     $( "#table_games_body" ).append(game);
   }
+
+  getStats();
 }
 
 function signIn() {
@@ -122,7 +190,7 @@ function signOut() {
 }
 
 function hideAllViews() {
-  $( ".view" ).css("display", "none");
+  $( ".view" ).addClass("hide");
   $( ".nav_link" ).removeClass("active");
   $( ".side_link" ).removeClass("active");
   // $( ".view" ).css( "display", "none" );
@@ -156,11 +224,11 @@ function addGame() {
     2: $("#input_score_p3").val(),
     3: $("#input_score_p4").val(),
   }
-  var checkboxes = {
-    0: { "road": $("#checkbox_road1").prop('checked'), "army": $("#checkbox_army1").prop('checked') },
-    1: { "road": $("#checkbox_road2").prop('checked'), "army": $("#checkbox_army2").prop('checked') },
-    2: { "road": $("#checkbox_road3").prop('checked'), "army": $("#checkbox_army3").prop('checked') },
-    3: { "road": $("#checkbox_road4").prop('checked'), "army": $("#checkbox_army4").prop('checked') },
+  var radios = {
+    0: { "road": $("#radio_road1").prop('checked'), "army": $("#radio_army1").prop('checked') },
+    1: { "road": $("#radio_road2").prop('checked'), "army": $("#radio_army2").prop('checked') },
+    2: { "road": $("#radio_road3").prop('checked'), "army": $("#radio_army3").prop('checked') },
+    3: { "road": $("#radio_road4").prop('checked'), "army": $("#radio_army4").prop('checked') },
   }
 
   var game = {
@@ -169,17 +237,12 @@ function addGame() {
     timestamp: firebase.database.ServerValue.TIMESTAMP
   }
   for(i in names) {
-    console.log(names[i] + ": " + scores[i])
-    if(names[i] = "" && scores[i] != "") {
-      console.log(i);
-      return false;
-    }
     for(j in names[i]) {
       game[names[i][j]] = scores[i];
-      if(checkboxes[i].road) {
+      if(radios[i].road) {
         game.road.push(names[i][j]);
       }
-      if(checkboxes[i].army) {
+      if(radios[i].army) {
         game.army.push(names[i][j]);
       }
     }
@@ -201,7 +264,7 @@ function addGame() {
 function showView(id) {
   hideAllViews();
   clearFields();
-  id.style.display = "block";
+  $("#" + id.id).removeClass("hide");
 }
 
 function clearFields() {

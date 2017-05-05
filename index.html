@@ -19,7 +19,7 @@
     </head>
 
     <body onload="init()">
-      <div id="signed_out" class="valign-wrapper">
+      <div id="signed_out" class="hide">
         <div id="sign_in_form" class="container">
           <div class="row">
             <div class="col m3"></div>
@@ -49,7 +49,7 @@
           </div>
         </div>
       </div>
-      <div id="signed_in">
+      <div id="signed_in" class="hide">
         <nav>
           <div class="nav-wrapper teal lighten-2">
             <div class="col s12">
@@ -81,7 +81,7 @@
               <div class="card-panel">
                 <h4>Players</h4>
                 <br>
-                <ul class="collection" id="list_players"></ul>
+                <ul class="collapsible" data-collapsible="accordion" id="list_players"></ul>
               </div>
             </div>
             <div class="col l2"></div>
@@ -128,7 +128,7 @@
         <div class="row"></div>
         <div class="row"></div>
           <div class="card-panel">
-            <h5>Add New Game</h5>
+            <h4>Add New Game</h4>
             <!-- Player 1 -->
             <div class="row">
               <div class="input-field col m6 s12">
@@ -141,12 +141,12 @@
                 <label for="input_score_p1">Score</label>
               </div>
               <div class="input-field col m2 s6">
-                <input type="checkbox" id="checkbox_road1" class="new_game_data player1"/>
-                <label for="checkbox_road1">Road</label>
+                <input class="with-gap" name="road" type="radio" id="radio_road1"  />
+                <label for="radio_road1">Road</label>
               </div>
               <div class="input-field col m2 s6">
-                <input type="checkbox" id="checkbox_army1" class="new_game_data player1" />
-                <label for="checkbox_army1">Army</label>
+                <input class="with-gap" name="army" type="radio" id="radio_army1"  />
+                <label for="radio_army1">Army</label>
               </div>
             </div>
 
@@ -162,12 +162,12 @@
                 <label for="input_score_p2">Score</label>
               </div>
               <div class="input-field col m2 s6">
-                <input type="checkbox" id="checkbox_road2" class="new_game_data player2"/>
-                <label for="checkbox_road2">Road</label>
+                <input class="with-gap" name="road" type="radio" id="radio_road2"  />
+                <label for="radio_road2">Road</label>
               </div>
               <div class="input-field col m2 s6">
-                <input type="checkbox" id="checkbox_army2" class="new_game_data player2" />
-                <label for="checkbox_army2">Army</label>
+                <input class="with-gap" name="army" type="radio" id="radio_army2"  />
+                <label for="radio_army2">Army</label>
               </div>
             </div>
 
@@ -183,12 +183,12 @@
                 <label for="input_score_p3">Score</label>
               </div>
               <div class="input-field col m2 s6">
-                <input type="checkbox" id="checkbox_road3" class="new_game_data player3"/>
-                <label for="checkbox_road3">Road</label>
+                <input class="with-gap" name="road" type="radio" id="radio_road3"  />
+                <label for="radio_road3">Road</label>
               </div>
               <div class="input-field col m2 s6">
-                <input type="checkbox" id="checkbox_army3" class="new_game_data player3" />
-                <label for="checkbox_army3">Army</label>
+                <input class="with-gap" name="army" type="radio" id="radio_army3"  />
+                <label for="radio_army3">Army</label>
               </div>
             </div>
 
@@ -205,12 +205,12 @@
                 <label for="input_score_p4">Score</label>
               </div>
               <div class="input-field col m2 s6">
-                <input type="checkbox" id="checkbox_road4" class="new_game_data player4"/>
-                <label for="checkbox_road4">Road</label>
+                <input class="with-gap" name="road" type="radio" id="radio_road4"  />
+                <label for="radio_road4">Road</label>
               </div>
               <div class="input-field col m2 s6">
-                <input type="checkbox" id="checkbox_army4" class="new_game_data player4" />
-                <label for="checkbox_army4">Army</label>
+                <input class="with-gap" name="army" type="radio" id="radio_army4"  />
+                <label for="radio_army4">Army</label>
               </div>
             </div>
             <div class="row">
