@@ -56,12 +56,14 @@
               <a onclick="showView(view_new)" class="brand-logo">&nbsp;&nbsp;Catan Tracker</a>
               <a href="#" data-activates="side_panel" class="button-collapse"><i class="material-icons">menu</i></a>
               <ul class="right hide-on-med-and-down">
+                <li><a class="nav_link" id="nav_new_game" onclick="showView(view_new_game)">New Game</a></li>
                 <li><a class="nav_link" id="nav_games" onclick="showView(view_games)">Games</a></li>
                 <li><a class="nav_link" id="nav_players" onclick="showView(view_players)">Players</a></li>
                 <li><a class="nav_link" id="nav_stats" onclick="showView(view_stats)">Stats</a></li>
                 <li><a class="nav_link" onclick="signOut()">Sign Out</a></li>
               </ul>
               <ul class="side-nav" id="side_panel">
+                <li><a class="side_link" id="side_new_game" onclick="showView(view_new_game)">New Game</a></li>
                 <li><a class="side_link" id="side_games" onclick="showView(view_games)">Games</a></li>
                 <li><a class="side_link" id="side_players" onclick="showView(view_players)">Players</a></li>
                 <li><a class="side_link" id="side_stats" onclick="showView(view_stats)">Stats</a></li>
@@ -118,38 +120,102 @@
             </div>
           </div>
 
-          <a id="button_add_game" class="btn-floating btn-large waves-effect waves-light teal hide-on-small-only modal-trigger" href="#modal_add_game"><i class="material-icons">add</i></a>
+          <a id="button_add_game" class="btn-floating btn-large waves-effect waves-light teal hide-on-small-only" onclick="showView(view_new_game)"><i class="material-icons">add</i></a>
         </div>
 
         <!-- Modal Structure -->
-        <div id="modal_add_game" class="modal modal-fixed-footer">
-          <div class="modal-content">
-            <h4>Add New Game</h4>
+        <div id="view_new_game" class="view container">
+        <div class="row"></div>
+        <div class="row"></div>
+          <div class="card-panel">
+            <h5>Add New Game</h5>
+            <!-- Player 1 -->
             <div class="row">
               <div class="input-field col m6 s12">
-                <select multiple class="new_game_data" id="select_player1">
-                  <option value="" disabled selected>Player 1</option>
-                  <option value="Louis">Louis</option>
-                  <option value="Laura">Laura</option>
-                  <option value="Bob">Bob</option>
+                <select multiple class="new_game_data player1 new_game_name_selector" id="p1_selector">
+                  <option value="" disabled>Player 1</option>
                 </select>
               </div>
               <div class="input-field col m2 s12">
-                <input id="last_name" type="number" class="validate new_game_data">
-                <label for="last_name">Score</label>
+                <input id="input_score_p1" type="number" class="validate new_game_data player1 score">
+                <label for="input_score_p1">Score</label>
               </div>
               <div class="input-field col m2 s6">
-                <input type="checkbox" id="checkbox_road" class="new_game_data"/>
-                <label for="checkbox_road">Road</label>
+                <input type="checkbox" id="checkbox_road1" class="new_game_data player1"/>
+                <label for="checkbox_road1">Road</label>
               </div>
               <div class="input-field col m2 s6">
-                <input type="checkbox" id="checkbox_army" class="new_game_data" />
-                <label for="checkbox_army">Army</label>
+                <input type="checkbox" id="checkbox_army1" class="new_game_data player1" />
+                <label for="checkbox_army1">Army</label>
               </div>
             </div>
-          </div>
-          <div class="modal-footer">
-            <a href="#!" onclick="addGame()" class="modal-action modal-close waves-effect waves-green btn-flat ">Add</a>
+
+            <!-- Player 2 -->
+            <div class="row">
+              <div class="input-field col m6 s12">
+                <select multiple class="new_game_data player2 new_game_name_selector" id="p2_selector">
+                  <option value="" disabled>Player 2</option>
+                </select>
+              </div>
+              <div class="input-field col m2 s12">
+                <input id="input_score_p2" type="number" class="validate new_game_data player2 score">
+                <label for="input_score_p2">Score</label>
+              </div>
+              <div class="input-field col m2 s6">
+                <input type="checkbox" id="checkbox_road2" class="new_game_data player2"/>
+                <label for="checkbox_road2">Road</label>
+              </div>
+              <div class="input-field col m2 s6">
+                <input type="checkbox" id="checkbox_army2" class="new_game_data player2" />
+                <label for="checkbox_army2">Army</label>
+              </div>
+            </div>
+
+            <!-- Player 3 -->
+            <div class="row">
+              <div class="input-field col m6 s12">
+                <select multiple class="new_game_data player3 new_game_name_selector" id="p3_selector">
+                  <option value="" disabled>Player 3</option>
+                </select>
+              </div>
+              <div class="input-field col m2 s12">
+                <input id="input_score_p3" type="number" class="validate new_game_data player3 score">
+                <label for="input_score_p3">Score</label>
+              </div>
+              <div class="input-field col m2 s6">
+                <input type="checkbox" id="checkbox_road3" class="new_game_data player3"/>
+                <label for="checkbox_road3">Road</label>
+              </div>
+              <div class="input-field col m2 s6">
+                <input type="checkbox" id="checkbox_army3" class="new_game_data player3" />
+                <label for="checkbox_army3">Army</label>
+              </div>
+            </div>
+
+            
+            <!-- Player 4 -->
+            <div class="row">
+              <div class="input-field col m6 s12">
+                <select multiple class="new_game_data player4 new_game_name_selector" id="p4_selector">
+                  <option value="" disabled>Player 4</option>
+                </select>
+              </div>
+              <div class="input-field col m2 s12">
+                <input id="input_score_p4" type="number" class="validate new_game_data player4 score">
+                <label for="input_score_p4">Score</label>
+              </div>
+              <div class="input-field col m2 s6">
+                <input type="checkbox" id="checkbox_road4" class="new_game_data player4"/>
+                <label for="checkbox_road4">Road</label>
+              </div>
+              <div class="input-field col m2 s6">
+                <input type="checkbox" id="checkbox_army4" class="new_game_data player4" />
+                <label for="checkbox_army4">Army</label>
+              </div>
+            </div>
+            <div class="row">
+              <a onclick="addGame()" class="waves-effect waves-green btn-large teal">Add</a>
+            </div>
           </div>
         </div>
         

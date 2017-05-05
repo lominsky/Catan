@@ -9,28 +9,13 @@ var config = {
 firebase.initializeApp(config);
 
 var database = firebase.database();
-var players;
+var players = {};
 var games;
 var currentUser = null;
 
 
 $( document ).ready(function(){
   $(".button-collapse").sideNav();
-
-  $('.modal').modal({
-    dismissible: true, // Modal can be dismissed by clicking outside of the modal
-    opacity: .5, // Opacity of modal background
-    inDuration: 300, // Transition in duration
-    outDuration: 200, // Transition out duration
-    startingTop: '4%', // Starting top style attribute
-    endingTop: '10%', // Ending top style attribute
-    ready: function(modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
-      console.log("Modal Opened");
-    },
-    complete: function() { 
-      console.log('Modal Closed'); 
-    } // Callback for Modal close
-  });
 
   $('select').material_select();
 });
@@ -42,7 +27,7 @@ function init() {
     } else {
       currentUser = null;
     }
-    showView(view_games);
+    showView(view_new_game);
     checkIfLoggedIn();
   });
 }
@@ -75,10 +60,13 @@ function checkIfLoggedIn() {
 function updatePlayers() {
   $( "li" ).remove( ".list_players_name" );
   $( "th" ).remove( ".games_header" );
+  $( "option" ).remove( ".selector_name" );
   for(i in players) {
     $( "#list_players" ).append( "<li class=\"collection-item list_players_name\">" + players[i] + "</li>" );
     $( "#table_games_header" ).append("<th class=\"games_header\">" + players[i] + "</th>");
+    $( "select" ).append("<option value=\"" + players[i] + "\" class=\"selector_name\">" + players[i] + "</th>");
   }
+  $('select').material_select();
 }
 
 function updateGames() {
@@ -88,6 +76,12 @@ function updateGames() {
     var day = date.getDate();
     var month = date.getMonth() + 1;
     var year = date.getFullYear();
+    if(!games[i].army) {
+      games[i].army = "";
+    }
+    if(!games[i].road) {
+      games[i].road = "";
+    }
     var game = "<tr class=\"table_games_row\"><td>" + 
       month + "/" + day + "/" + year + "</td><td>" + games[i].road +
       "</td><td>"  + games[i].army +
@@ -104,15 +98,6 @@ function updateGames() {
     }
     $( "#table_games_body" ).append(game);
   }
-
-                  //   <tr class="table_games_row">
-                  //   <td>Date</td>
-                  //   <td>Road</td>
-                  //   <td>Army</td>
-                  //   <td>Player</td>
-                  //   <td>Player</td>
-                  //   <td>Player</td>
-                  // </tr>
 }
 
 function signIn() {
@@ -158,8 +143,59 @@ function addPlayer() {
 
 function addGame() {
   var data = $( ".new_game_data");
-  var selects = $('#select_player1').val();
-  console.log(selects);
+  var names = {
+    0: ($('#p1_selector').val()),
+    1: ($('#p2_selector').val()),
+    2: ($('#p3_selector').val()),
+    3: ($('#p4_selector').val())
+  }
+
+  var scores = {
+    0: $("#input_score_p1").val(),
+    1: $("#input_score_p2").val(),
+    2: $("#input_score_p3").val(),
+    3: $("#input_score_p4").val(),
+  }
+  var checkboxes = {
+    0: { "road": $("#checkbox_road1").prop('checked'), "army": $("#checkbox_army1").prop('checked') },
+    1: { "road": $("#checkbox_road2").prop('checked'), "army": $("#checkbox_army2").prop('checked') },
+    2: { "road": $("#checkbox_road3").prop('checked'), "army": $("#checkbox_army3").prop('checked') },
+    3: { "road": $("#checkbox_road4").prop('checked'), "army": $("#checkbox_army4").prop('checked') },
+  }
+
+  var game = {
+    army: [],
+    road: [],
+    timestamp: firebase.database.ServerValue.TIMESTAMP
+  }
+  for(i in names) {
+    console.log(names[i] + ": " + scores[i])
+    if(names[i] = "" && scores[i] != "") {
+      console.log(i);
+      return false;
+    }
+    for(j in names[i]) {
+      game[names[i][j]] = scores[i];
+      if(checkboxes[i].road) {
+        game.road.push(names[i][j]);
+      }
+      if(checkboxes[i].army) {
+        game.army.push(names[i][j]);
+      }
+    }
+  }
+
+  var updates = {};
+  if(games)
+    updates['/games/' + games.length] = game;
+  else
+    updates['/games/' + 0] = game;
+
+  if(Object.keys(game).length > 3) {
+    firebase.database().ref().update(updates);
+    Materialize.toast('Added Game (#' + games.length + ')', 2000) // 4000 is the duration of the toast
+    showView(view_games);
+  }
 }
 
 function showView(id) {
@@ -170,4 +206,11 @@ function showView(id) {
 
 function clearFields() {
   $("#field_new_player").val("");
+  $('#p1_selector').val("");
+  $('#p2_selector').val("");
+  $('#p3_selector').val("");
+  $('#p4_selector').val("");
+  $('.new_game_data').val("");
+  $("input").prop('checked', false);
+  $('select').material_select();
 }
