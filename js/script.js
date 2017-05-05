@@ -28,7 +28,7 @@ function init() {
     } else {
       currentUser = null;
     }
-    showView(view_new_game);
+    showView("view_" + window.location.hash.substring(1));
     checkIfLoggedIn();
   });
 }
@@ -76,8 +76,7 @@ function updatePlayers() {
   $( "th" ).remove( ".games_header" );
   $( "option" ).remove( ".selector_name" );
   for(i in players) {
-    $( "#list_players" ).append( "<li class=\"list_players_name\"><div class=\"collapsible-header list_players_name\">" + players[i] + "</div><div class=\"collapsible-body list_players_name\"><span>" + players[i] + "</span></div></li>" );
-    $( "#list_players" ).append(  );
+    $( "#list_players" ).append( "<li class=\"list_players_name\"><div class=\"collapsible-header list_players_name\">" + players[i] + "</div><div class=\"collapsible-body list_players_name " + players[i] + "\"><div class=\"user_info " + players[i] + "\"></div></div></li>" );
     $( "#table_games_header" ).append("<th class=\"games_header\">" + players[i] + "</th>");
     $( "select" ).append("<option value=\"" + players[i] + "\" class=\"selector_name\">" + players[i] + "</th>");
   }
@@ -86,26 +85,58 @@ function updatePlayers() {
 
 function getStats() {
   stats = {};
-  for(i in players) 
-  {
+  for(i in players) {
     var temp = { 
       wins: 0 ,
-      games_played: 0
+      adjusted_scores: [],
+      army: 0,
+      road: 0
     };
     stats[players[i]] = temp;
 
   }
 
-  countWins();
-  console.log(stats);
+  adjustScores();
+
+  $( "div" ).remove( ".user_datum" );
+  for(i in players) {
+    var played = stats[players[i]].adjusted_scores.length;
+    var wins = stats[players[i]].wins;
+    var ratio = ((played != 0) ? Math.round(100*wins/played) : 0) + "";
+    var army = stats[players[i]].army;
+    var road = stats[players[i]].road;
+    var armyRatio = ((played != 0) ? Math.round(100*army/played) : 0) + "";
+    var roadRatio = ((played != 0) ? Math.round(100*road/played) : 0) + "";
+
+    $( ".user_info", "." + players[i] ).append( "<div class=\"row user_datum\"><div class=\"col\">Games Played: " + played + "</div><div class=\"col\">Games Won: " + wins + " (" + ratio + "%)</div></div>" );
+    // $( ".user_info", "." + players[i] ).append( "<div class=\"row user_datum\"></div>" );
+    $( ".user_info", "." + players[i] ).append( "<div class=\"row user_datum\"><div class=\"col\">Army: " + army + " (" + armyRatio + "%)</div><div class=\"col\">Road: " + road + " (" + roadRatio + "%)</div></div>" );
+    // $( ".user_info", "." + players[i] ).append( "<div class=\"row user_datum\"></div>" );
+  }
 }
 
-function countWins() {
-  for(i in games) {
-    var winners = checkWinner(games[i]);
-    for(j in winners) {
-      stats[winners[j]].wins++;
+function adjustScores() {
+  for(var i = 0; i < games.length; i++) {
+    var max = findMax(games[i]);
+    for(j in players) {
+      if(games[i][players[j]] != null) {
+        stats[players[j]].adjusted_scores.push(games[i][players[j]]/max);
+      }
     }
+    var army = games[i].army;
+    for(var j = 0; j < army.length; j++) {
+      if(stats[army[j]] != null)
+        stats[army[j]].army++;
+    }
+    var road = games[i].road;
+    for(j in road) {
+      if(stats[road[j]] != null)
+        stats[road[j]].road++;
+    }
+  }
+  for(i in players) {
+    var name = players[i];
+    stats[name].wins = stats[name].adjusted_scores.filter(function(score) { return score==1 }).length;
   }
 }
 
@@ -113,26 +144,12 @@ function findMax(game) {
   var max = 0;
   for(i in players) {
     if(game[players[i]]) {
-      stats[players[i]].games_played++;
       if(game[players[i]] > max) {
         max = game[players[i]];
       }
     }
   }
   return max;
-}
-
-function checkWinner(game) {
-  var max = findMax(game);
-  var winners = [];
-  for(i in players) {
-    if(game[players[i]]) {
-      if(game[players[i]] == max) {
-        winners.push(players[i]);
-      }
-    }
-  }
-  return winners
 }
 
 function updateGames() {
@@ -262,9 +279,14 @@ function addGame() {
 }
 
 function showView(id) {
+  if(id.id != null) {
+    id = id.id;
+  }
+
   hideAllViews();
   clearFields();
-  $("#" + id.id).removeClass("hide");
+  $("#" + id).removeClass("hide");
+  window.location.hash = "#" + id.substring(5);
 }
 
 function clearFields() {
